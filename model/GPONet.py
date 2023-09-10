@@ -21,10 +21,10 @@ class FFM(nn.Module):
 
         # get fuse attention
         gap = self.GAP(input).squeeze(-1).squeeze(-1)
-        fuse_att = self.fuse(gap).view(B, 8, 1, 1)  # (B,8,1,1)
+        fuse_att = self.fuse(gap).view(B, 8, 1, 1)
 
         # fuse from gb&dt out
-        fuse = input * fuse_att.expand_as(input)  # (B,8,224,224)
+        fuse = input * fuse_att.expand_as(input)
 
         return fuse
 
@@ -93,15 +93,15 @@ class GPONet(nn.Module):
 
 
     def get_stage_pred(self, out_gb_feat, out_eg_feat, x):
-        gb_pre_88 = self.mlp(out_gb_feat[3], x, self.gb_head1)  # (B,1,224,224)
-        gb_pre_44 = self.mlp(out_gb_feat[2], x, self.gb_head2)  # (B,1,224,224)
-        gb_pre_22 = self.mlp(out_gb_feat[1], x, self.gb_head3)  # (B,1,224,224)
-        gb_pre_11 = self.mlp(out_gb_feat[0], x, self.gb_head4)  # (B,1,224,224)
+        gb_pre_88 = self.mlp(out_gb_feat[3], x, self.gb_head1)
+        gb_pre_44 = self.mlp(out_gb_feat[2], x, self.gb_head2)
+        gb_pre_22 = self.mlp(out_gb_feat[1], x, self.gb_head3)
+        gb_pre_11 = self.mlp(out_gb_feat[0], x, self.gb_head4)
         gb_pred = [gb_pre_88, gb_pre_44, gb_pre_22, gb_pre_11]
-        eg_pre_88 = self.mlp(out_eg_feat[3], x, self.eg_head1)  # (B,1,224,224)
-        eg_pre_44 = self.mlp(out_eg_feat[2], x, self.eg_head2)  # (B,1,224,224)
-        eg_pre_22 = self.mlp(out_eg_feat[1], x, self.eg_head3)  # (B,1,224,224)
-        eg_pre_11 = self.mlp(out_eg_feat[0], x, self.eg_head4)  # (B,1,224,224)
+        eg_pre_88 = self.mlp(out_eg_feat[3], x, self.eg_head1)
+        eg_pre_44 = self.mlp(out_eg_feat[2], x, self.eg_head2)
+        eg_pre_22 = self.mlp(out_eg_feat[1], x, self.eg_head3)
+        eg_pre_11 = self.mlp(out_eg_feat[0], x, self.eg_head4)
         eg_pred = [eg_pre_88, eg_pre_44, eg_pre_22, eg_pre_11]
 
         cat_pred = [gb_pre_88,gb_pre_44,gb_pre_22,gb_pre_11,eg_pre_88,eg_pre_44,eg_pre_22,eg_pre_11]
@@ -120,16 +120,13 @@ class GPONet(nn.Module):
         gb_loss = 0
         for i,gb_pre in enumerate(gb):
             gb_loss += self.iou_loss(gb_pre,mask,alpha)
-        # gb_loss = gb_loss / 4
 
         edge_loss = 0
         for i,eg_pre in enumerate(eg):
             edge_loss += (beta * self.edge_loss(eg_pre, detail)).mean()
-        # edge_loss = edge_loss / 4
 
         fuse_loss = (alpha * self.fuse_loss(fuse,mask)).mean()
 
-        # totoal_loss = gb_loss + edge_loss + fuse_loss
         totoal_loss = gb_loss*ratio[0] + edge_loss*ratio[1] + fuse_loss*ratio[2]
 
         return totoal_loss
@@ -149,14 +146,13 @@ class GPONet(nn.Module):
                 totoal_mae += torch.abs(pred[b] - gt[b]).mean()
             avg_mae = totoal_mae/B
 
-        # mae_list = [] # for debug
         return avg_mae
 
     # 各个分支的预测头
     def mlp(self,src,tar,head):
         B,_,H,W = tar.shape
-        up = self.up_sample(src,tar)  # (B,C,h,w)
-        out = head(up)   # (B,1,224,224)
+        up = self.up_sample(src,tar)
+        out = head(up)
         return out
 
 

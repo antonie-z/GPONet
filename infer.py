@@ -55,39 +55,32 @@ def infer(img_path):
     return gb_pre_56,dt_pre_56,pred
 
 def plot(image_name, image, gb_pred, eg_pred, final_pred, save_img=True):
-    # 创建一个包含9个子图的大图，2行4列布局
     fig = plt.figure(figsize=(12, 9))
     gs = GridSpec(3, 4, figure=fig)
 
 
     for i, gb in enumerate(gb_pred):
-        # 第一个子图
         ax = fig.add_subplot(gs[0, i])
         ax.set_title(f'Global Stage {4-i} Output')
-        # 添加你的第一个子图内容
-        ax.imshow(gb, cmap='viridis')  # cmap参数用于设置颜色映射
-        ax.axis('off')  # 显示横纵坐标
+        ax.imshow(gb, cmap='viridis')
+        ax.axis('off')
 
     for i, eg in enumerate(eg_pred):
-        # 第一个子图
         ax = fig.add_subplot(gs[1, i])
         ax.set_title(f'Detail Stage {4 - i} Output')
-        # 添加你的第一个子图内容
-        ax.imshow(eg, cmap='viridis')  # cmap参数用于设置颜色映射
-        ax.axis('off')  # 显示横纵坐标
+        ax.imshow(eg, cmap='viridis')
+        ax.axis('off')
 
-    # 处理最后一行，使其只包含一个子图，位于整个画布的中间位置，并等比例放大
-    ax = fig.add_subplot(gs[2, :2])  # 占据整个第三行
-    ax.axis('off')  # 显示横纵坐标
-    ax.set_title('Original Image')  # 设置标题
-    ax.imshow(image)  # 添加内容，并等比例放大
+    ax = fig.add_subplot(gs[2, :2])
+    ax.axis('off')
+    ax.set_title('Original Image')
+    ax.imshow(image)
 
-    ax = fig.add_subplot(gs[2, 2:])  # 占据整个第三行
-    ax.axis('off')  # 显示横纵坐标
-    ax.set_title('Final Saliency Map')  # 设置标题
-    ax.imshow(final_pred, cmap='viridis')  # 添加内容，并等比例放大
+    ax = fig.add_subplot(gs[2, 2:])
+    ax.axis('off')
+    ax.set_title('Final Saliency Map')
+    ax.imshow(final_pred, cmap='viridis')
 
-    # 调整子图之间的间距
     plt.tight_layout()
     if save_img:
         save_path = 'save_infer_results'

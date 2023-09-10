@@ -52,13 +52,12 @@ class GFM(nn.Module):
         self.convAct1 = nn.Sequential(nn.Conv2d(out_channel,out_channel,3,padding=1), nn.BatchNorm2d(out_channel), nn.ReLU(inplace=True))         # for higher feat       [B, out_channel, M, N]
         self.convAct2 = nn.Sequential(nn.Conv2d(out_channel,out_channel,3,padding=1), nn.BatchNorm2d(out_channel), nn.ReLU(inplace=True))         # for higher feat       [B, out_channel, M, N]
         self.convLack = nn.Sequential(nn.Conv2d(out_channel,out_channel,3,padding=1), nn.BatchNorm2d(out_channel), nn.ReLU(inplace=True))         # for higher feat       [B, out_channel, M, N]
-        # self.norm = nn.BatchNorm2d(out_channel)
 
     def forward(self, higher_feat, lower_feat):
         size = lower_feat.shape[2:]
 
         f1 = F.interpolate(higher_feat,size=size,mode='bilinear')
-        g1 = self.gate1(f1)         # g1 for higher_feat
+        g1 = self.gate1(f1)                  # g1 for higher_feat
         act1 = self.convAct1(g1 * f1)
 
         g2 = self.gate2(lower_feat)          # g2 for lower_feat
@@ -127,7 +126,6 @@ class Decoder(nn.Module):
         self.crg4 = CRG(out_channel)
 
     def forward(self,gb_list,eg_list):
-        # feat_list = [f_7, f_14, f_28, f_56]
 
         # gate fuse out
         fuse_gb_7, fuse_gb_14, fuse_gb_28, fuse_gb_56 = self.gfn_gb(gb_list)  # (B, gfm_channel, 56/28/14/7, 56/28/14/7)

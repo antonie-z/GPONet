@@ -27,7 +27,6 @@ sal_dataloader = DataLoader(sal_dataset, batch_size=batch_size_train, num_worker
 
 train_num = len(sal_dataset)
 
-# define net
 net = GPONet()
 net = net.to(device)
 
@@ -71,8 +70,6 @@ for epoch in range(epoch_num):
         scaler.scale(loss).backward()
         scaler.step(optimizer)
         scaler.update()
-        # loss.backward()
-        # optimizer.step()
 
         running_loss += loss.data.item()
         running_mae += mae.data.item()
