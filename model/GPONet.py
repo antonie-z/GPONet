@@ -148,7 +148,6 @@ class GPONet(nn.Module):
 
         return avg_mae
 
-    # 各个分支的预测头
     def mlp(self,src,tar,head):
         B,_,H,W = tar.shape
         up = self.up_sample(src,tar)
