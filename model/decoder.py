@@ -115,7 +115,6 @@ class Decoder(nn.Module):
     def __init__(self,in_channel_list, out_channel):
         super(Decoder, self).__init__()
 
-        # Gate融合
         self.gfn_gb = GFN(in_channel_list, out_channel)
         self.gfn_eg = GFN(in_channel_list, out_channel)
 
